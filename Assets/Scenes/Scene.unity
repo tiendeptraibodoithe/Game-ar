@@ -687,8 +687,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78db66d566c5a674ea491651900233ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 3975503172090055863, guid: e5a9d681185970841ac0870da9670783,
-    type: 3}
+  enemyPrefabs:
+  - {fileID: 3975503172090055863, guid: e5a9d681185970841ac0870da9670783, type: 3}
+  - {fileID: 3975503172090055863, guid: b6351a0d836abc94d9a7df85e23b2fe8, type: 3}
+  - {fileID: 3975503172090055863, guid: e6b599a0067936840ab3cfc30f06144f, type: 3}
+  - {fileID: 3975503172090055863, guid: a21c15de6c9214549bf32498ccb1187b, type: 3}
   spawnAnchor: {fileID: 1169124735}
   spawnOffset: {x: 13, y: 0, z: 0}
   destroyPos: {x: -10, y: 0, z: 0}

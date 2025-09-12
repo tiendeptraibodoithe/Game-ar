@@ -4,7 +4,9 @@ using System.Collections;
 public class EnemySpawnManager : MonoBehaviour
 {
     [Header("Enemy Settings")]
-    public GameObject enemyPrefab;
+    public GameObject[] enemyPrefabs;
+    private int unlockedTypes = 1;
+    private float elapsedTime = 0f; 
     [Tooltip("Điểm gốc để tính vị trí spawn")]
     public Transform spawnAnchor;
     public Vector3 spawnOffset = new Vector3(12f, 0f, 0f);
@@ -32,6 +34,24 @@ public class EnemySpawnManager : MonoBehaviour
         Debug.Log($"SpawnAnchor scale: {spawnAnchor.lossyScale}");
     }
 
+    void Update()
+    {
+        if (autoSpawn)
+        {
+            elapsedTime += Time.deltaTime;
+
+            if (elapsedTime >= 30f)
+                unlockedTypes = 4;
+            else if (elapsedTime >= 20f)
+                unlockedTypes = 3;
+            else if (elapsedTime >= 10f)
+                unlockedTypes = 2;
+            else
+                unlockedTypes = 1;
+        }
+    }
+
+
     private IEnumerator AutoSpawnCoroutine()
     {
         while (autoSpawn)
@@ -46,14 +66,18 @@ public class EnemySpawnManager : MonoBehaviour
 
     public void SpawnEnemy()
     {
-        if (enemyPrefab == null)
+        if (enemyPrefabs == null || enemyPrefabs.Length == 0)
         {
-            Debug.LogWarning("Enemy prefab is null!");
+            Debug.LogWarning("Enemy prefabs array is empty!");
             return;
         }
 
+        // Chọn prefab random trong số unlocked
+        int index = Random.Range(0, unlockedTypes);
+        GameObject prefabToSpawn = enemyPrefabs[index];
+
         // Random Y offset
-        float randomYOffset = Random.Range(Mathf.RoundToInt(minYOffset), Mathf.RoundToInt(maxYOffset) + 1);
+        float randomYOffset = Random.Range(minYOffset, maxYOffset);
 
         if (spawnAsAnchorChild && spawnAnchor != null)
         {
@@ -63,12 +87,11 @@ public class EnemySpawnManager : MonoBehaviour
                 spawnOffset.z
             );
 
-            GameObject enemy = Instantiate(enemyPrefab, spawnAnchor);
+            GameObject enemy = Instantiate(prefabToSpawn, spawnAnchor);
             enemy.transform.localPosition = localSpawnPos;
 
-            // 🔑 Giữ nguyên scale gốc của prefab
-            enemy.transform.localScale = enemyPrefab.transform.localScale;
-            Vector3 desiredWorldScale = enemyPrefab.transform.localScale;
+            // Giữ scale gốc
+            Vector3 desiredWorldScale = prefabToSpawn.transform.localScale;
             Vector3 parentScale = spawnAnchor.lossyScale;
             Vector3 requiredLocalScale = new Vector3(
                 desiredWorldScale.x / parentScale.x,
@@ -77,18 +100,19 @@ public class EnemySpawnManager : MonoBehaviour
             );
             enemy.transform.localScale = requiredLocalScale;
 
-            Debug.Log($"Enemy spawned as anchor child at local pos: {localSpawnPos}, scale: {enemy.transform.localScale}");
+            Debug.Log($"Spawned enemy type {index + 1} at {localSpawnPos}");
         }
 
         currentEnemyCount++;
 
-        // Setup enemy component
-        EnemyMove move = GameObject.FindObjectOfType<EnemyMove>(); // Get the newest spawned enemy
+        // Setup enemy component cho đúng instance
+        EnemyMove move = prefabToSpawn.GetComponent<EnemyMove>();
         if (move != null)
         {
             move.parentManager = this;
         }
     }
+
 
     public void OnEnemyDestroyed()
     {
@@ -151,6 +175,8 @@ public class EnemySpawnManager : MonoBehaviour
         }
 
         currentEnemyCount = 0;
+        elapsedTime = 0f;   // reset lại thời gian
+        unlockedTypes = 1;
 
         // Reset coroutine spawn nếu được cho phép
         StopAllCoroutines();
