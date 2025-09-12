@@ -13,11 +13,7 @@ public class EnemyMove : MonoBehaviour
     public Vector3 targetScale = new Vector3(1.3f, 1.3f, 1.3f);
     private bool calledSpawn = false;
 
-    [Header("Enemy Behavior")]
-    public float health = 30f; // HP của enemy
-    public GameObject deathEffect; // Hiệu ứng khi chết (optional)
-
-    // References
+    // References - PUBLIC để Enemy script có thể access
     private Vector3 destroyPos;
     public EnemySpawnManager parentManager; // Được gán từ SpawnManager
     public GameManager gameManager;
@@ -100,7 +96,7 @@ public class EnemyMove : MonoBehaviour
         if (currentX <= destroyPos.x)
         {
             if (this.transform.localScale.x <= 0)
-                DestroyEnemy();
+                DestroyEnemyByPosition(); // Enemy bị hủy do đi ra khỏi màn hình (KHÔNG có exp)
             else
                 ResizeDown();
         }
@@ -122,7 +118,8 @@ public class EnemyMove : MonoBehaviour
         {
             // Trở về vận tốc gốc, z luôn 0
             moveSpeed = new Vector3(originalMoveSpeed.x, originalMoveSpeed.y, 0f);
-            if (enemyShoot != null) enemyShoot.SetShootingEnabled(true);
+            if (enemyShoot != null)
+                enemyShoot.SetShootingEnabled(true);
             return;
         }
 
@@ -140,7 +137,8 @@ public class EnemyMove : MonoBehaviour
             // Lấy vị trí player ngay lúc này làm target
             targetPosition = new Vector3(player.position.x, player.position.y, 0f);
             hasTarget = true;
-            if (enemyShoot != null) enemyShoot.SetShootingEnabled(false);
+            if (enemyShoot != null)
+                enemyShoot.SetShootingEnabled(false);
             Debug.Log($"Enemy locked onto target position: {targetPosition}");
         }
 
@@ -167,7 +165,8 @@ public class EnemyMove : MonoBehaviour
                 // Đã đến target, quay về di chuyển bình thường
                 hasTarget = false;
                 moveSpeed = new Vector3(originalMoveSpeed.x, originalMoveSpeed.y, 0f);
-                if (enemyShoot != null) enemyShoot.SetShootingEnabled(true);
+                if (enemyShoot != null)
+                    enemyShoot.SetShootingEnabled(true);
                 Debug.Log("Enemy reached target, resuming normal movement");
             }
             else
@@ -180,7 +179,8 @@ public class EnemyMove : MonoBehaviour
         {
             // Không có target, di chuyển bình thường
             moveSpeed = new Vector3(originalMoveSpeed.x, originalMoveSpeed.y, 0f);
-            if (enemyShoot != null) enemyShoot.SetShootingEnabled(true);
+            if (enemyShoot != null)
+                enemyShoot.SetShootingEnabled(true);
         }
     }
 
@@ -227,26 +227,10 @@ public class EnemyMove : MonoBehaviour
         }
     }
 
-    // Nhận damage từ bullet
-    public void TakeDamage(float damage)
+    // Enemy bị hủy do đi ra khỏi màn hình - KHÔNG cho exp
+    void DestroyEnemyByPosition()
     {
-        health -= damage;
-        Debug.Log($"Enemy nhận {damage} damage. HP còn lại: {health}");
-
-        if (health <= 0)
-        {
-            DestroyEnemy();
-        }
-    }
-
-    void DestroyEnemy()
-    {
-        if (deathEffect != null)
-        {
-            Instantiate(deathEffect, transform.position, Quaternion.identity);
-        }
-
-        Debug.Log("Enemy đã chết!");
+        Debug.Log("Enemy destroyed by position! (No experience gained)");
 
         // Đảm bảo gọi OnEnemyDestroyed để giảm counter
         if (parentManager != null)
@@ -260,15 +244,6 @@ public class EnemyMove : MonoBehaviour
         }
 
         Destroy(this.gameObject);
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            Debug.Log("Enemy va chạm với Player!");
-            // Xử lý va chạm với player nếu cần
-        }
     }
 
     void OnDrawGizmosSelected()
@@ -292,10 +267,8 @@ public class EnemyMove : MonoBehaviour
     public void SetParentManager(EnemySpawnManager manager)
     {
         parentManager = manager;
-
         if (parentManager != null)
             destroyPos = parentManager.destroyPos;
-
         Debug.Log("ParentManager set successfully");
     }
 }

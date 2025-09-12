@@ -47,7 +47,7 @@ GameObject:
   - component: {fileID: 6396296019255713648}
   - component: {fileID: 3806327816923782018}
   m_Layer: 8
-  m_Name: EnemyTest
+  m_Name: EnemyTest 2
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -97,7 +97,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 60ad947de024fa84fa3e8b74c3d4b677, type: 2}
+  - {fileID: 2100000, guid: 4530f4c32550c5b46ba36b337f20f56f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -174,7 +174,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
-  health: 10
+  health: 30
   deathEffect: {fileID: 0}
 --- !u!114 &3806327816923782018
 MonoBehaviour:
@@ -183,7 +183,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3975503172090055863}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 02f5ab358ff73f0478e316a8c58e4f7b, type: 3}
   m_Name: 
