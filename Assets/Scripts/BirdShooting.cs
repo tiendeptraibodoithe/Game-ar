@@ -9,7 +9,11 @@ public class BirdShooting : MonoBehaviour
     public Transform firePoint;
     public float bulletSpeed = 100f;
     public float bulletLifetime = 3f;
-    public float fireRate = 0.5f; // Thời gian giữa mỗi lần bắn (giây)
+    public float fireRate = 0.5f;
+
+    [Header("Upgrade Settings")]
+    public bool doubleBullet = false; // bật/tắt chế độ bắn đôi
+    public float doubleBulletOffset = 0.5f; // khoảng cách ngang giữa 2 viên đạn
 
     [Header("Audio (Optional)")]
     public AudioClip shootSound;
@@ -24,6 +28,13 @@ public class BirdShooting : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance == null ||
+        !GameManager.Instance.startedGame ||
+        !GameManager.Instance.stillAlive)
+        {
+            return;
+        }
+
         // Tự động bắn
         fireTimer += Time.deltaTime;
         if (fireTimer >= fireRate)
@@ -41,9 +52,34 @@ public class BirdShooting : MonoBehaviour
             return;
         }
 
-        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        if (doubleBullet)
+        {
+            // Spawn 2 viên đạn sang trái và phải một chút
+            Vector3 leftOffset = firePoint.right * -doubleBulletOffset;
+            Vector3 rightOffset = firePoint.right * doubleBulletOffset;
 
+            SpawnBullet(firePoint.position + leftOffset);
+            SpawnBullet(firePoint.position + rightOffset);
+        }
+        else
+        {
+            // Spawn 1 viên đạn bình thường
+            SpawnBullet(firePoint.position);
+        }
+
+        if (audioSource != null && shootSound != null)
+        {
+            audioSource.PlayOneShot(shootSound);
+        }
+
+        Debug.Log("Bird đã bắn!");
+    }
+
+    private void SpawnBullet(Vector3 spawnPos)
+    {
+        GameObject bullet = Instantiate(bulletPrefab, spawnPos, firePoint.rotation);
         Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+
         if (bulletRb == null)
         {
             bulletRb = bullet.AddComponent<Rigidbody>();
@@ -54,13 +90,6 @@ public class BirdShooting : MonoBehaviour
         bulletRb.angularDrag = 0f;
         bulletRb.velocity = firePoint.forward * bulletSpeed;
 
-        if (audioSource != null && shootSound != null)
-        {
-            audioSource.PlayOneShot(shootSound);
-        }
-
         Destroy(bullet, bulletLifetime);
-
-        Debug.Log("Bird đã bắn!");
     }
 }

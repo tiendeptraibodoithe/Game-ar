@@ -4,7 +4,7 @@ public class Health : MonoBehaviour, IDamageable
 {
     [Header("Health Settings")]
     public int maxLives = 3;
-    private int currentLives;
+    public int currentLives;
 
     private Rigidbody rb;
     private GameManager gameManager;

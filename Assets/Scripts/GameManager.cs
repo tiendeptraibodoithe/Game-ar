@@ -3,6 +3,8 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
+
     public bool startedGame = false;
     public bool stillAlive = true;
     public int points = 0;
@@ -12,12 +14,25 @@ public class GameManager : MonoBehaviour
     public GameObject[] movableObjectParents;
     public EnemySpawnManager enemySpawnManager;
 
+
     [Header("Animation Settings")]
     public GameObject immovableObjects; // ImmovableObjects GameObject
     public Animator immovableObjectsAnimator; // Animator component của ImmovableObjects
     public string startAnimationName = "AnimationStartGame"; // Tên animation
     public float animationDuration = 1f; // Thời gian animation (giây)
     public GameObject birdObject; // Bird GameObject để tạm tắt
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {
@@ -111,7 +126,17 @@ public class GameManager : MonoBehaviour
             playerHealth.ResetHealth();
         }
 
-        // Chạy lại animation khi reset game
+        if (ExperienceManager.Instance != null)
+        {
+            ExperienceManager.Instance.ResetExperience();
+        }
+
+        // Reset toàn bộ upgrade
+        if (UpgradeSystem.Instance != null)
+        {
+            UpgradeSystem.Instance.ResetUpgrades();
+        }
+
         PlayStartAnimation();
     }
 }

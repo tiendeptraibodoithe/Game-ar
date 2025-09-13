@@ -227,9 +227,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 756db52c209e60245b934949706d852c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startButton: {fileID: 0}
-  optionsButton: {fileID: 0}
-  quitButton: {fileID: 0}
+  startButton: {fileID: 1236607199}
+  optionsButton: {fileID: 1994617517}
+  quitButton: {fileID: 626691416}
   scaleFactor: 1.1
   lerpSpeed: 10
 --- !u!4 &305964630

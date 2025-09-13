@@ -176,6 +176,7 @@ MonoBehaviour:
   damage: 1
   health: 20
   deathEffect: {fileID: 0}
+  enemyType: 0
 --- !u!114 &3806327816923782018
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -33,20 +33,20 @@
                 rigidBody.useGravity = true;
 
                 if (mainMan.stillAlive) {
-                    // Jump
-                    if (Input.GetKeyUp("space") || Input.GetMouseButtonUp(0)) {
-                        rigidBody.velocity = Vector3.zero;
-                        rigidBody.AddForce(jumpForce);
-                        audioSource.PlayOneShot(flapSound);
-                        boostParticles.Play();
-                }
+                // Jump
+                    if (!UpgradeSystem.Instance.isUpgrading) // chặn input khi đang mở upgrade
+                    {
+                        if (Input.GetKeyUp("space") || Input.GetMouseButtonUp(0))
+                        {
+                            rigidBody.velocity = Vector3.zero;
+                            rigidBody.AddForce(jumpForce);
+                            audioSource.PlayOneShot(flapSound);
+                            boostParticles.Play();
+                        }
+                    }
 
                     if (rigidBody.velocity.y > 0)
                         transform.localRotation = Quaternion.Euler(transform.localRotation.x, transform.localRotation.y, 0);
-                    //} else {
-                    //    float angle = Mathf.Lerp(0, -90.0f, -rigidBody.velocity.y / 2);
-                    //    transform.localRotation = Quaternion.Euler(transform.localRotation.x, transform.localRotation.y, angle);
-                    //}
 
                 }
             }else {

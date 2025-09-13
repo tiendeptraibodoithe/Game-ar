@@ -76,9 +76,16 @@ public class ExperienceManager : MonoBehaviour
             currentLevel++;
             UpdateLevel();
             Debug.Log($"LEVEL UP! New level: {currentLevel}");
-            // Start level up sequence... Possibly vfx?
+
+            // Gọi Upgrade System
+            if (UpgradeSystem.Instance != null)
+            {
+                UpgradeSystem.Instance.ShowUpgradeOptions();
+            }
         }
     }
+
+
 
     void UpdateLevel()
     {
@@ -95,6 +102,17 @@ public class ExperienceManager : MonoBehaviour
         levelText.text = currentLevel.ToString();
         experienceText.text = start + " exp / " + end + " exp";
         experienceFill.fillAmount = (float)start / (float)end;
+    }
+
+    public void ResetExperience()
+    {
+        currentLevel = 0;
+        totalExperience = 0;
+        previousLevelsExperience = 0;
+        nextLevelsExperience = (int)experienceCurve.Evaluate(1); // chuẩn bị cho level 1
+
+        UpdateInterface();
+        Debug.Log("Experience & Level reset to Level 0.");
     }
 
     // Getter methods (nếu cần)

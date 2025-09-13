@@ -30,6 +30,7 @@ public class Enemy : MonoBehaviour, IDamageable
         if (health <= 0)
         {
             DestroyEnemy(true); // true = killed by player (give exp)
+            ScoreCounter.Instance.AddScoreFromEnemy(enemyType);
         }
     }
 
@@ -77,6 +78,12 @@ public class Enemy : MonoBehaviour, IDamageable
 
             Debug.Log("Enemy va chạm với Player!");
             DestroyEnemy(false); // false = not killed by player (no exp)
+        }
+        else if (other.CompareTag("Shield"))
+        {
+            // Nếu va chạm shield thì Enemy mất máu
+            TakeDamage(damage);
+            Debug.Log("Enemy chạm Shield!");
         }
     }
 

@@ -10,6 +10,7 @@ TagManager:
   - Undefined
   - Bullet
   - Enemy
+  - Shield
   layers:
   - Default
   - TransparentFX
