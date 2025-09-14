@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e15f7359473cc741ac85317ca786317, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 20
+  damage: 30
   hitEffect: {fileID: 0}
   hitLayers:
     serializedVersion: 2
